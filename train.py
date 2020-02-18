@@ -15,13 +15,27 @@ if cfg.model == 'CNN':
 	model = CNN.CNN(image_height=cfg.image_height,
 					image_width=cfg.image_width,
 					image_depth= cfg.image_depth,
-					learning_rate=cfg.learning_rate
+					learning_rate=cfg.learning_rate,
+					freeze_conv = cfg.freeze_conv
 					)
 
 
-# if cfg.model == 'CapsNet':
+if cfg.model == 'CapsNet':
 
-# 	model = CapsNet.CapsNet()
+	model = CapsNet.CapsNet(image_height=cfg.image_height,
+							image_width=cfg.image_width,
+							image_depth= cfg.image_depth,
+							learning_rate=cfg.learning_rate,
+							primary_caps_vlength=cfg.primary_caps_vlength  ,
+							digit_caps_vlength=cfg.digit_caps_vlength ,
+							epsilon=cfg.epsilon,
+							lambda_=cfg.lambda_,
+							m_plus=cfg.m_plus,
+							m_minus=cfg.m_minus,
+							reg_scale=cfg.reg_scale,
+							routing_iteration=cfg.routing_iteration,
+							freeze_conv = cfg.freeze_conv
+							)
 
 
 utils_train = utils.Utils(data_path=cfg.train_data_path,
