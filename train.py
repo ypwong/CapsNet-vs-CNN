@@ -1,8 +1,7 @@
-import tensorflow as tf 
+from conf import args as cfg
 import numpy as  np 
 import os
 import utils
-from conf import args as cfg
 import CNN
 import CapsNet
 from tqdm import tqdm
@@ -11,6 +10,7 @@ import pandas as pd
 from pandas_ml import ConfusionMatrix
 import matplotlib.pyplot as plt
 import seaborn as sns
+import tensorflow as tf 
 
 tf.reset_default_graph()
 sess = tf.InteractiveSession()
@@ -66,7 +66,7 @@ if not os.path.exists(fig_save_path) : os.makedirs(fig_save_path)
 
 if cfg.freeze_conv:
 
-	load_model_path = './model_ckpt/CNN/'+str(cfg.train_data_path.split('/')[-1])
+	load_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-1])
 
 sess.run(tf.global_variables_initializer())
 
@@ -75,7 +75,7 @@ saver = tf.train.Saver(tf.global_variables())
 try:
 
 	saver.restore(sess, load_model_path)
-	print("CNN model is loaded !")
+	print("Prevous model is loaded !")
 
 except Exception as e:
 
@@ -88,6 +88,8 @@ training_losses = []
 training_accuracies = []
 testing_losses = []
 testing_accuracies = []
+
+best_test_accuracy = 0
 
 for epoch_idx in range(cfg.epoch):
 
@@ -142,6 +144,11 @@ for epoch_idx in range(cfg.epoch):
 		total_testing_loss += loss_
 		total_testing_accuracy += accuracy_
 		testing_counter += 1
+
+	#save the model with the highest accuracy
+	if total_testing_accuracy/testing_counter > best_test_accuracy:
+		saver.save(sess, save_model_path)
+		best_test_accuracy = total_testing_accuracy/testing_counter
 
 	#append the testing losses and accuracies
 	testing_losses.append(total_testing_loss)
