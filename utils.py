@@ -18,6 +18,16 @@ class Utils:
 		self.image_height = image_height
 		self.image_width = image_width
 		self.image_depth = image_depth
+		self.mode = self.data_path.split('/')[-2]
+
+		self.classes_dict = {
+			'1_polygon' :{'triangle':0, 'rectangle':1},
+			'2_polygons':{'arrow':0, 'non_arrow':1}
+		}
+		self.inverse_classes_dict = {
+			'1_polygon' :{0:'triangle', 1:'rectangle'},
+			'2_polygons':{0:'arrow', 1:'non_arrow'}
+		}
 
 		data_list = self.get_data_list()
 
@@ -33,13 +43,6 @@ class Utils:
 
 		data_list = []
 
-		#arrow images will be represented as 0 and non_arrow images will be represented as 1.
-		label_dict = {
-			'arrow' : 0,
-			'non_arrow' : 1,
-			'triangle' : 0,
-			'rectangle' : 1
-		}
 
 		#iterate through all the items in the given directory recursively.
 		for path in glob.glob(self.data_path + '**', recursive=True):
@@ -47,7 +50,7 @@ class Utils:
 
 			if path[-3:] == 'jpg':
 
-				temp = [path, label_dict[path.split('/')[-2]]]
+				temp = [path, self.classes_dict[self.mode][path.split('/')[-2]]]
 				data_list.append(temp)
 
 		shuffle(data_list) #randomly shuffle the list

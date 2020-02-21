@@ -93,6 +93,8 @@ class CNN:
 		#logits
 		self.logits = tf.matmul(dropout_layer, self.weight_variable([128, 2])) + self.bias_variable([2])
 
+		self.softmaxed_prediction = tf.nn.softmax(self.logits, axis=1)
+
 
 	def loss_func(self):
 		'''

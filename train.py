@@ -1,11 +1,16 @@
 import tensorflow as tf 
 import numpy as  np 
+import os
 import utils
 from conf import args as cfg
 import CNN
 import CapsNet
 from tqdm import tqdm
 from tabulate import tabulate
+import pandas as pd
+from pandas_ml import ConfusionMatrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 tf.reset_default_graph()
 sess = tf.InteractiveSession()
@@ -51,12 +56,17 @@ utils_test = utils.Utils(data_path= cfg.test_data_path,
 total_training_data = utils_train.total_data
 total_testing_data  = utils_test.total_data
 
-save_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.data_path.split('/')[-1])
+save_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-1])
 load_model_path = None
+
+#Path to save figures
+fig_save_path = cfg.fig_save_path + cfg.train_data_path.split('/')[-2] + '/'+ cfg.train_data_path.split('/')[-3] + '/'
+if not os.path.exists(fig_save_path) : os.makedirs(fig_save_path)
+
 
 if cfg.freeze_conv:
 
-	load_model_path = './model_ckpt/CNN/'+str(cfg.data_path.split('/')[-1])
+	load_model_path = './model_ckpt/CNN/'+str(cfg.train_data_path.split('/')[-1])
 
 sess.run(tf.global_variables_initializer())
 
@@ -72,6 +82,12 @@ except Exception as e:
 	print("Model is not loaded !")
 
 
+pred_list   = []
+actual_list = []
+training_losses = []
+training_accuracies = []
+testing_losses = []
+testing_accuracies = []
 
 for epoch_idx in range(cfg.epoch):
 
@@ -100,6 +116,10 @@ for epoch_idx in range(cfg.epoch):
 		total_training_accuracy += accuracy_
 		training_counter += 1
 
+	#append the training losses and accuracies
+	training_losses.append(total_training_loss)
+	training_accuracies.append(total_training_accuracy/training_counter)
+
 
 
 	testing_counter = 0
@@ -123,6 +143,35 @@ for epoch_idx in range(cfg.epoch):
 		total_testing_accuracy += accuracy_
 		testing_counter += 1
 
+	#append the testing losses and accuracies
+	testing_losses.append(total_testing_loss)
+	testing_accuracies.append(total_testing_accuracy/testing_counter)
+
+	if epoch_idx == cfg.epoch - 1:
+
+		for idx_start in tqdm(range(0, total_testing_data, cfg.batch_size)):
+
+			idx_end = idx_start + cfg.batch_size
+
+			if idx_end >= total_testing_data : idx_end = total_testing_data - 1
+
+			test_images, test_labels = utils_test(idx_start, idx_end)
+
+			predicted_label = sess.run([model.softmaxed_prediction], feed_dict={
+																				model.x: test_images,
+																				model.y: test_labels,
+																				model.keep_prob: 1 
+																				})
+
+
+			target_labels = [utils_test.inverse_classes_dict[utils_test.mode][int(x)] for x in np.argmax(test_labels, axis=1)]
+			pred_labels   = [utils_test.inverse_classes_dict[utils_test.mode][int(x)] for x in np.argmax(predicted_label[0], axis=1)]
+
+			pred_list.append(pred_labels)
+			actual_list.append(target_labels)
+
+
+
 
 
 	print("\t----Epoch %d---- "%(epoch_idx+1))
@@ -135,7 +184,52 @@ for epoch_idx in range(cfg.epoch):
 					   headers=["Evaluation Loss/Accuracy", "Value"]))
 
 
+#After the training and testing
+
+pred_list = sum(pred_list, [])
+actual_list = sum(actual_list, [])
+
+
+data = {'predicted': pred_list,
+        'actual':   actual_list,
+        }
+
+df = pd.DataFrame(data, columns=['actual','predicted'])
+
+confusion_matrix = pd.crosstab(df['actual'], df['predicted'], rownames=['Actual'], colnames=['Predicted'])
+
+sns.heatmap(confusion_matrix, annot=True)
+plt.savefig(fig_save_path+'confusion_matrix.jpg')
+plt.clf()
+
+
+x_axis = [x for x in range(cfg.epoch)] #number of epochs
+
+y_axis_training_loss = training_losses
+y_axis_training_acc  = training_accuracies
+y_axis_testing_loss	 = testing_losses
+y_axis_testing_acc 	 = testing_accuracies
+
+plt.plot(x_axis, y_axis_training_loss, 'r--', label='Training Loss')
+plt.plot(x_axis, y_axis_testing_loss, 'b--', label='Testing Loss')
+plt.title("Training and Testing Losses")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracies")
+plt.legend()
 
 
 
+
+plt.savefig(fig_save_path+'loss_result.jpg')
+
+plt.clf()
+
+plt.plot(x_axis, y_axis_training_acc, 'r--', label='Training Accuracies')
+plt.plot(x_axis, y_axis_testing_acc, 'b--', label='Testing Accuracies')
+plt.title("Training and Testing Accuracies")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracies")
+plt.legend()
+
+plt.savefig(fig_save_path+'accuracy_result.jpg')
 

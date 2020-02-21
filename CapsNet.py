@@ -224,8 +224,8 @@ class CapsNet:
 		Calculate model's accuracy.
 		'''
 
-		softmax_v = tf.nn.softmax(self.v_lengths, axis=1)
-		argmax_idx = tf.argmax(softmax_v, axis=1)
+		self.softmaxed_prediction = tf.nn.softmax(self.v_lengths, axis=1)
+		argmax_idx = tf.argmax(self.softmaxed_prediction, axis=1)
 		argmax_idx = tf.reshape(argmax_idx, shape=(tf.shape(self.x)[0],))
 		correct_prediction = tf.equal(argmax_idx, tf.argmax(self.y,1))
 		self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float32'), name='accuracy')

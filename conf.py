@@ -16,8 +16,9 @@ defaults = {
 	'm_minus' : 0.1,
 	'reg_scale': 0.005,
 	'routing_iteration' : 3,
-	'test_data_path': './dataset/testing/2000/',
-	'train_data_path' : './dataset/training/500/1_polygon/'
+	'test_data_path': './dataset/testing/2000/1_polygon/',
+	'train_data_path' : './dataset/training/500/1_polygon/',
+	'fig_save_path' : './figures/'
 }
 
 
@@ -25,7 +26,7 @@ defaults = {
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--model', type=str, help='Specify the model. CNN or CapsNet', required=True)
-parser.add_argument('--data_path', type=str, help='Specify the path to the data.', required=True)
+parser.add_argument('--train_data_path', type=str, default=defaults['train_data_path'], help='Specify the folder for the training data.')
 parser.add_argument('--freeze_conv', type=bool, help='Convolutional layers should be freezed during the transfer learning.', required=True)
 parser.add_argument('--epoch', type=int, default=defaults['epoch'], help='Specify the number of training epoch.')
 parser.add_argument('--image_height', type=int, default=defaults['image_height'], help='Specify the height of the training images.')
@@ -42,8 +43,8 @@ parser.add_argument('--m_plus', type=float, default=defaults['m_plus'], help='Sp
 parser.add_argument('--m_minus', type=float, default=defaults['m_minus'],help='Specify the m minus value for CapsNet.')
 parser.add_argument('--reg_scale', type=float, default=defaults['reg_scale'], help='Specify the regularization scale value for CapsNet"s recon network.')
 parser.add_argument('--routing_iteration', type=float, default=defaults['routing_iteration'], help='Specify the routing iteration for CapsNet.')
-parser.add_argument('--train_data_path', type=str, default=defaults['train_data_path'], help='Specify the folder for the training data.')
 parser.add_argument('--test_data_path', type=str, default=defaults['test_data_path'], help='Specify the folder for the testing data.')
+parser.add_argument('--fig_save_path', type=str, default=defaults['fig_save_path'], help='Specify the folder for saving the result figures.')
 
 args = parser.parse_args()
 
