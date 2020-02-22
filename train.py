@@ -56,7 +56,7 @@ utils_test = utils.Utils(data_path= cfg.test_data_path,
 total_training_data = utils_train.total_data
 total_testing_data  = utils_test.total_data
 
-save_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-1])
+save_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-3]) + '/' +str(cfg.train_data_path.split('/')[-2]) + '/model.ckpt'
 load_model_path = None
 
 #Path to save figures
@@ -66,7 +66,7 @@ if not os.path.exists(fig_save_path) : os.makedirs(fig_save_path)
 
 if cfg.freeze_conv:
 
-	load_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-1])
+	load_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-3] + '/1_polygon/model.ckpt')
 
 sess.run(tf.global_variables_initializer())
 
