@@ -28,7 +28,7 @@ if cfg.model == 'CNN':
 
 
 if cfg.model == 'CapsNet':
-	
+
 	model = CapsNet.CapsNet(image_height=cfg.image_height,
 							image_width=cfg.image_width,
 							image_depth= cfg.image_depth,
@@ -199,7 +199,7 @@ for epoch_idx in range(cfg.epoch):
 
 #After the training and testing
 print("Best test accuracy : ", best_test_accuracy)
-accuracy_file = open('best_test_accuracy.txt', 'w')
+accuracy_file = open(fig_save_path + 'best_test_accuracy.txt', 'w')
 accuracy_file.write("The best testing accuracy is : " + str(best_test_accuracy))
 
 pred_list = sum(pred_list, [])

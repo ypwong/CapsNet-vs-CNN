@@ -1,1 +1,0 @@
-The best testing accuracy is : 0.7873265218378892
