@@ -42,7 +42,8 @@ parser.add_argument('--min_angle', default=defaults['min_angle'], type=int, help
 parser.add_argument('--max_angle', default=defaults['max_angle'], type=int, help='Define the maximum angle between triangle vector and rectangle vector.')
 parser.add_argument('--mode', default=defaults['mode'], type=str, help='Define whether the data generated are for testing purposes or training purposes. train or test.')
 
-cfg = parser.parse_cfg()
+cfg = parser.parse_args()
+
 
 # assert cfg.num_of_sides >= 3, "Number of sides must be more than 2 !"
 # assert cfg.height >= 20, "Image height must be at least 20!"
