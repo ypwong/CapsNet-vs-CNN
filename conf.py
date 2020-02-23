@@ -16,7 +16,7 @@ defaults = {
 	'm_minus' : 0.1,
 	'reg_scale': 0.005,
 	'routing_iteration' : 3,
-	'decay_steps' : 50,
+	'decay_steps' : 100,
 	'decay_rate' : 0.98,
 	'test_data_path_base': './dataset/testing/2000/',
 	'train_data_path' : './dataset/training/500/1_polygon/',

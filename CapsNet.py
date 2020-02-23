@@ -21,8 +21,8 @@ class CapsNet:
 		self.image_width			= image_width
 		self.image_depth  			= image_depth
 		self.learning_rate			= learning_rate
-		self.decay_steps 		 	= decay_steps,
-		self.decay_rate				= decay_rate,
+		self.decay_steps 		 	= decay_steps
+		self.decay_rate				= decay_rate
 		self.freeze_conv 			= freeze_conv
 		self.primary_caps_vlength 	= primary_caps_vlength
 		self.digit_caps_vlength 	= digit_caps_vlength
@@ -46,9 +46,7 @@ class CapsNet:
 		self.keep_prob = tf.placeholder(tf.float32) #to be consistent with CNN model.
 
 		self.build_model()
-		self.classification_loss_func()
 		self.reconstruction_network()
-		self.reconstruction_loss_func()
 		self.total_loss()
 		self.optimization()
 		self.accuracy()
@@ -70,7 +68,7 @@ class CapsNet:
 	
 		#define a weight variable for one capsule first
 		W = tf.get_variable('Weight', shape=(1, num_capsules, 2, self.primary_caps_vlength, self.digit_caps_vlength))
-		b = tf.get_variable('Bias', shape=(1,1,2, self.digit_caps_vlength,1 )) 
+		b = tf.get_variable('Bias', shape=(1, 1, 2, self.digit_caps_vlength,1 )) 
 		W = tf.tile(W, [tf.shape(capsule_layer)[0], 1, 1 ,1 ,1]) #tiling just makes a copy of the same weight variable for all the items in the batch. It is still the same weight.
 		x = tf.tile(capsule_layer, [1, 1, 2, 1, 1]) #this is set up for dynamic routing later
 		u_hat = tf.matmul(W,x, transpose_a=True) #[batch_size, 1152, 10, 16, 1]
@@ -153,13 +151,7 @@ class CapsNet:
 
 		#the length of each vectors in the digit capsule layer
 		#[batch_size, 10, 1, 1]
-		self.v_lengths = tf.sqrt(tf.reduce_sum(tf.square(self.digits), axis=2, keepdims=True) + self.epsilon, name='digit_vectors')
-
-
-	def classification_loss_func(self):
-		'''
-		Model's loss function.
-		'''
+		self.v_lengths = tf.sqrt(tf.reduce_sum(tf.square(self.digits), axis=2, keepdims=True) + self.epsilon, name='digit_vectors') 
 
 		#Objective function for classification
 		max_l = tf.square(tf.maximum(0., self.m_plus - self.v_lengths), name='max_l')
@@ -184,11 +176,6 @@ class CapsNet:
 		fc1 = tf.contrib.layers.fully_connected(vector_j, num_outputs=512, activation_fn=tf.nn.relu, trainable=True)
 		fc2 = tf.contrib.layers.fully_connected(fc1, num_outputs=1024, activation_fn=tf.nn.relu, trainable=True)
 		self.decoded = tf.layers.dense(fc2, units=self.image_height*self.image_width, activation=tf.nn.sigmoid, name='decoded')
-
-	def reconstruction_loss_func(self):
-		'''
-		Reconstruction network's loss function.
-		'''
 
 		#RECONSTUCTION LOSS
 		origin   = tf.reshape(self.x, shape=(tf.shape(self.digits)[0], -1))
@@ -216,10 +203,10 @@ class CapsNet:
 		global_step = tf.Variable(0, trainable=False)
 		decayed_lr = tf.train.exponential_decay(self.learning_rate,
 		                                            global_step, self.decay_steps,
-		                                            self.decay_rate, staircase=True)
+		                                            0.98, staircase=True)
 
 
-		self.train_step = tf.train.AdamOptimizer(decayed_lr).minimize(self.loss, global_step=global_step) #for reconstruction
+		self.train_step = tf.train.AdamOptimizer(decayed_lr).minimize(self.loss, global_step=global_step) 
 
 	def accuracy(self):
 		'''	
