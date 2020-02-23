@@ -16,7 +16,9 @@ defaults = {
 	'm_minus' : 0.1,
 	'reg_scale': 0.005,
 	'routing_iteration' : 3,
-	'test_data_path': './dataset/testing/2000/1_polygon/',
+	'decay_steps' : 50,
+	'decay_rate' : 0.98,
+	'test_data_path_base': './dataset/testing/2000/',
 	'train_data_path' : './dataset/training/500/1_polygon/',
 	'fig_save_path' : './figures/'
 }
@@ -43,7 +45,9 @@ parser.add_argument('--m_plus', type=float, default=defaults['m_plus'], help='Sp
 parser.add_argument('--m_minus', type=float, default=defaults['m_minus'],help='Specify the m minus value for CapsNet.')
 parser.add_argument('--reg_scale', type=float, default=defaults['reg_scale'], help='Specify the regularization scale value for CapsNet"s recon network.')
 parser.add_argument('--routing_iteration', type=float, default=defaults['routing_iteration'], help='Specify the routing iteration for CapsNet.')
-parser.add_argument('--test_data_path', type=str, default=defaults['test_data_path'], help='Specify the folder for the testing data.')
+parser.add_argument('--decay_steps', type=int, default=defaults['decay_steps'], help='Specify the decay steps for the models.')
+parser.add_argument('--decay_rate', type=float, default=defaults['decay_rate'], help='Specify the rate of decay for the models.')
+parser.add_argument('--test_data_path_base', type=str, default=defaults['test_data_path_base'], help='Specify the folder for the testing data.')
 parser.add_argument('--fig_save_path', type=str, default=defaults['fig_save_path'], help='Specify the folder for saving the result figures.')
 
 args = parser.parse_args()

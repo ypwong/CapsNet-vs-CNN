@@ -10,7 +10,7 @@ class CNN:
 		c) 2 Fully-Connected layers
 	'''
 
-	def __init__(self, image_height, image_width, image_depth, learning_rate, freeze_conv=False, input_placeholder=None):
+	def __init__(self, image_height, image_width, image_depth, learning_rate, decay_steps, decay_rate, freeze_conv=False, input_placeholder=None):
 		'''
 		Initialize the model parameters.
 		'''
@@ -20,6 +20,8 @@ class CNN:
 		self.image_depth  	= image_depth
 		self.learning_rate	= learning_rate
 		self.freeze_conv 	= freeze_conv
+		self.decay_steps 	= decay_steps
+		self.decay_rate		= decay_rate
 
 		#Declare the input placeholder
 		if input_placeholder is None : 
@@ -107,6 +109,11 @@ class CNN:
 		'''
 		Model optimization functions
 		'''
+
+		global_step = tf.Variable(0, trainable=False)
+		decayed_lr = tf.train.exponential_decay(self.learning_rate,
+                                            global_step, self.decay_steps,
+                                            self.decay_rate, staircase=True)
 
 		self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
 

@@ -21,6 +21,8 @@ if cfg.model == 'CNN':
 					image_width=cfg.image_width,
 					image_depth= cfg.image_depth,
 					learning_rate=cfg.learning_rate,
+					decay_steps= cfg.decay_steps,
+					decay_rate = cfg.decay_rate,
 					freeze_conv = cfg.freeze_conv
 					)
 
@@ -31,6 +33,8 @@ if cfg.model == 'CapsNet':
 							image_width=cfg.image_width,
 							image_depth= cfg.image_depth,
 							learning_rate=cfg.learning_rate,
+							decay_steps= cfg.decay_steps,
+							decay_rate = cfg.decay_rate,
 							primary_caps_vlength=cfg.primary_caps_vlength  ,
 							digit_caps_vlength=cfg.digit_caps_vlength ,
 							epsilon=cfg.epsilon,
@@ -48,7 +52,7 @@ utils_train = utils.Utils(data_path=cfg.train_data_path,
 					image_width=cfg.image_width,
 					image_depth=cfg.image_depth)
 
-utils_test = utils.Utils(data_path= cfg.test_data_path,
+utils_test = utils.Utils(data_path= cfg.test_data_path_base + str(cfg.train_data_path.split('/')[-2]) + '/',
 						image_height=cfg.image_height,
 						image_width=cfg.image_width,
 						image_depth=cfg.image_depth)
@@ -58,6 +62,8 @@ total_testing_data  = utils_test.total_data
 
 save_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/')[-3]) + '/' +str(cfg.train_data_path.split('/')[-2]) + '/model.ckpt'
 load_model_path = None
+
+if not os.path.exists(save_model_path) : os.makedirs(save_model_path)
 
 #Path to save figures
 fig_save_path = cfg.fig_save_path + cfg.train_data_path.split('/')[-2] + '/'+ cfg.train_data_path.split('/')[-3] + '/'

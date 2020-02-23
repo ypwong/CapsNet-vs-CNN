@@ -64,7 +64,7 @@ if mode == 'train':
 	if not os.path.exists(rectangle_save_path) : os.makedirs(rectangle_save_path)
 	if not os.path.exists(arrow_save_path) : os.makedirs(arrow_save_path)
 
-	for i in range(num_of_data):
+	for i in range(num_of_data//2):
 
 
 		arrow		= arrow_gen.generate_polygon()
@@ -80,7 +80,7 @@ if mode == 'train':
 if mode == 'test':
 
 	save_path = test_save_path
-	num_of_data = 2000 #we use 2000 images for evaluation
+	num_of_data = 2000 #we use 1000 images in each class for evaluation
 
 	non_arrow_save_path = save_path+str(num_of_data)+'/2_polygons/non_arrow/'
 	triangle_save_path	 = save_path+str(num_of_data)+'/1_polygon/triangle/'
@@ -92,7 +92,7 @@ if mode == 'test':
 	if not os.path.exists(rectangle_save_path) : os.makedirs(rectangle_save_path)
 	if not os.path.exists(arrow_save_path) : os.makedirs(arrow_save_path)
 
-	for i in range(num_of_data):
+	for i in range(num_of_data//2):
 
 
 		arrow		= arrow_gen.generate_polygon()

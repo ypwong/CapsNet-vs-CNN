@@ -11,7 +11,7 @@ class CapsNet:
 		c) 1 Digit Caps layer.
 	'''
 
-	def __init__(self, image_height, image_width, image_depth, learning_rate, primary_caps_vlength, digit_caps_vlength, epsilon, lambda_,
+	def __init__(self, image_height, image_width, image_depth, learning_rate, decay_steps, decay_rate, primary_caps_vlength, digit_caps_vlength, epsilon, lambda_,
 														m_plus, m_minus, reg_scale, routing_iteration, freeze_conv=False, input_placeholder=None):
 		'''
 		Initialize the CapsNet model with the fixed parameters.
@@ -21,6 +21,8 @@ class CapsNet:
 		self.image_width			= image_width
 		self.image_depth  			= image_depth
 		self.learning_rate			= learning_rate
+		self.decay_steps 		 	= decay_steps,
+		self.decay_rate				= decay_rate,
 		self.freeze_conv 			= freeze_conv
 		self.primary_caps_vlength 	= primary_caps_vlength
 		self.digit_caps_vlength 	= digit_caps_vlength
@@ -213,8 +215,8 @@ class CapsNet:
 		#decayed learning rate
 		global_step = tf.Variable(0, trainable=False)
 		decayed_lr = tf.train.exponential_decay(self.learning_rate,
-		                                            global_step, 20000,
-		                                            0.98, staircase=True)
+		                                            global_step, self.decay_steps,
+		                                            self.decay_rate, staircase=True)
 
 
 		self.train_step = tf.train.AdamOptimizer(decayed_lr).minimize(self.loss, global_step=global_step) #for reconstruction
