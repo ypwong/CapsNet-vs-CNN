@@ -7,6 +7,9 @@ import CapsNet
 from tqdm import tqdm
 from tabulate import tabulate
 import pandas as pd
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
 from pandas_ml import ConfusionMatrix
 import matplotlib
 matplotlib.pyplot.switch_backend('agg')
@@ -112,7 +115,7 @@ for epoch_idx in range(cfg.epoch):
 
 		idx_end = idx_start + cfg.batch_size
 
-		if idx_end >= total_training_data : idx_end = total_training_data - 1
+		if idx_end >= total_training_data : idx_end = total_training_data +1
 
 
 		train_images, train_labels = utils_train(idx_start, idx_end)
@@ -139,7 +142,7 @@ for epoch_idx in range(cfg.epoch):
 
 		idx_end = idx_start + cfg.batch_size
 
-		if idx_end >= total_testing_data : idx_end = total_testing_data - 1
+		if idx_end >= total_testing_data : idx_end = total_testing_data +1
 
 
 		test_images, test_labels = utils_test(idx_start, idx_end)
@@ -169,7 +172,7 @@ for epoch_idx in range(cfg.epoch):
 
 			idx_end = idx_start + cfg.batch_size
 
-			if idx_end >= total_testing_data : idx_end = total_testing_data - 1
+			if idx_end >= total_testing_data : idx_end = total_testing_data +1
 
 			test_images, test_labels = utils_test(idx_start, idx_end)
 
@@ -202,12 +205,13 @@ for epoch_idx in range(cfg.epoch):
 
 #After the training and testing
 print("Best test accuracy : ", best_test_accuracy)
-accuracy_file = open(fig_save_path + 'best_test_accuracy.txt', 'w')
-accuracy_file.write("The best testing accuracy is : " + str(best_test_accuracy))
+
 
 pred_list = sum(pred_list, [])
 actual_list = sum(actual_list, [])
 
+
+print(len(pred_list), len(actual_list))
 
 data = {'predicted': pred_list,
         'actual':   actual_list,
@@ -219,15 +223,21 @@ confusion_matrix = pd.crosstab(df['actual'], df['predicted'], rownames=['Actual'
 
 sns.heatmap(confusion_matrix, annot=True)
 plt.savefig(fig_save_path+'confusion_matrix.jpg')
-plt.clf()
 
-cm = ConfusionMatrix(df['actual'], df['predicted'])
-stats = cm.stats()
-info = stats['class']
+actual_list = [utils_test.classes_dict[utils_test.mode][x] for x in actual_list]
+pred_list = [utils_test.classes_dict[utils_test.mode][x] for x in pred_list]
+
+print('Precision is:'+str(round(precision_score(actual_list, pred_list),2)))
+
+precision = round(precision_score(actual_list, pred_list),2)
+recall = round(recall_score(actual_list, pred_list),2)
+f1_score = round(f1_score(actual_list, pred_list),2)
+
+info = "Precision : " + str(precision) +" Recall : " + str(recall) + " F1 Score : " + str(f1_score) + " Best Test Accuracy : " + str(best_test_accuracy)
 
 stats_file = open(fig_save_path + 'stats.txt', 'w')
 stats_file.write(info)
-
+plt.clf()
 
 x_axis = [x for x in range(cfg.epoch)] #number of epochs
 
