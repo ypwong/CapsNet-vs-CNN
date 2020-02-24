@@ -210,9 +210,6 @@ print("Best test accuracy : ", best_test_accuracy)
 pred_list = sum(pred_list, [])
 actual_list = sum(actual_list, [])
 
-
-print(len(pred_list), len(actual_list))
-
 data = {'predicted': pred_list,
         'actual':   actual_list,
         }
