@@ -134,6 +134,8 @@ for epoch_idx in range(cfg.epoch):
 	training_losses.append(total_training_loss)
 	training_accuracies.append(total_training_accuracy/training_counter)
 
+	curr_lr = sess.run([model.decayed_lr])
+	print("Current learning rate : " , curr_lr)
 
 
 	testing_counter = 0

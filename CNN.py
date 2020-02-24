@@ -111,11 +111,11 @@ class CNN:
 		'''
 
 		global_step = tf.Variable(0, trainable=False)
-		decayed_lr = tf.train.exponential_decay(self.learning_rate,
+		self.decayed_lr = tf.train.exponential_decay(self.learning_rate,
                                             global_step, self.decay_steps,
                                             self.decay_rate, staircase=True)
 
-		self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+		self.train_step = tf.train.AdamOptimizer(self.decayed_lr).minimize(self.loss)
 
 	def accuracy(self):
 		'''
