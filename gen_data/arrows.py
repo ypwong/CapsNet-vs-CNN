@@ -195,7 +195,13 @@ class Arrows:
 		point1, point2, line_length = self.generate_points() #Generate two random points and get the length of the vector.
 
 		#Get the point on the line where the triangle's base would intersect and the height of the triangle.
-		triangle_point, tri_height = self.find_point_on_line(point1, point2, self.tri_height_ratio) 
+		if triangle and not rectangle:
+			
+			adjusted_size = self.tri_height_ratio + 0.2
+		else:
+			adjusted_size = self.tri_height_ratio
+
+		triangle_point, tri_height = self.find_point_on_line(point1, point2, adjusted_size) 
 
 		triangle_base_length = self.find_triangle_width(tri_height) #Get the length of the triangle's base.
 
