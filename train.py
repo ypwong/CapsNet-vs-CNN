@@ -8,6 +8,9 @@ from tqdm import tqdm
 from tabulate import tabulate
 import pandas as pd
 from pandas_ml import ConfusionMatrix
+import matplotlib
+matplotlib.pyplot.switch_backend('agg')
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf 
@@ -217,6 +220,12 @@ confusion_matrix = pd.crosstab(df['actual'], df['predicted'], rownames=['Actual'
 sns.heatmap(confusion_matrix, annot=True)
 plt.savefig(fig_save_path+'confusion_matrix.jpg')
 plt.clf()
+
+cm = ConfusionMatrix(df['actual'], df['predicted'])
+info = stats['class']
+
+stats_file = open(fig_save_path + 'stats.txt', 'w')
+stats_file.write(info)
 
 
 x_axis = [x for x in range(cfg.epoch)] #number of epochs
