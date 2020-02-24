@@ -100,7 +100,7 @@ class Utils:
 		'''
 
 		#if the last index exceeds the total amount of data.
-		if last_index >= self.total_data : last_index = self.total_data - 1
+		if last_index > self.total_data : last_index = self.total_data
 
 		batch_images, batch_labels = [], []
 

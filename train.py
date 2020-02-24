@@ -115,9 +115,6 @@ for epoch_idx in range(cfg.epoch):
 
 		idx_end = idx_start + cfg.batch_size
 
-		if idx_end >= total_training_data : idx_end = total_training_data +1
-
-
 		train_images, train_labels = utils_train(idx_start, idx_end)
 
 		loss_, accuracy_, _ = sess.run([model.loss, model.accuracy, model.train_step], 
@@ -143,9 +140,6 @@ for epoch_idx in range(cfg.epoch):
 	for idx_start in tqdm(range(0, total_testing_data, cfg.batch_size)):
 
 		idx_end = idx_start + cfg.batch_size
-
-		if idx_end >= total_testing_data : idx_end = total_testing_data +1
-
 
 		test_images, test_labels = utils_test(idx_start, idx_end)
 
@@ -173,8 +167,6 @@ for epoch_idx in range(cfg.epoch):
 		for idx_start in tqdm(range(0, total_testing_data, cfg.batch_size)):
 
 			idx_end = idx_start + cfg.batch_size
-
-			if idx_end >= total_testing_data : idx_end = total_testing_data +1
 
 			test_images, test_labels = utils_test(idx_start, idx_end)
 
