@@ -222,6 +222,7 @@ plt.savefig(fig_save_path+'confusion_matrix.jpg')
 plt.clf()
 
 cm = ConfusionMatrix(df['actual'], df['predicted'])
+stats = cm.stats()
 info = stats['class']
 
 stats_file = open(fig_save_path + 'stats.txt', 'w')
