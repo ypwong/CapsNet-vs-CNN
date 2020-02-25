@@ -10,7 +10,6 @@ import pandas as pd
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
-from pandas_ml import ConfusionMatrix
 import matplotlib
 matplotlib.pyplot.switch_backend('agg')
 
@@ -131,7 +130,7 @@ for epoch_idx in range(cfg.epoch):
 	training_losses.append(total_training_loss)
 	training_accuracies.append(total_training_accuracy/training_counter)
 
-	curr_lr = sess.run([model.decayed_lr])
+	curr_lr = sess.run(model.decayed_lr)
 	print("Current learning rate : " , curr_lr)
 
 
@@ -213,7 +212,7 @@ df = pd.DataFrame(data, columns=['actual','predicted'])
 confusion_matrix = pd.crosstab(df['actual'], df['predicted'], rownames=['Actual'], colnames=['Predicted'])
 
 sns.heatmap(confusion_matrix, annot=True)
-plt.savefig(fig_save_path+'confusion_matrix.jpg')
+plt.savefig(fig_save_path+'confusion_matrix.png')
 
 actual_list = [utils_test.classes_dict[utils_test.mode][x] for x in actual_list]
 pred_list = [utils_test.classes_dict[utils_test.mode][x] for x in pred_list]
@@ -247,7 +246,7 @@ plt.legend()
 
 
 
-plt.savefig(fig_save_path+'loss_result.jpg')
+plt.savefig(fig_save_path+'loss_result.png')
 
 plt.clf()
 
@@ -258,5 +257,5 @@ plt.xlabel("Epoch")
 plt.ylabel("Accuracies")
 plt.legend()
 
-plt.savefig(fig_save_path+'accuracy_result.jpg')
+plt.savefig(fig_save_path+'accuracy_result.png')
 

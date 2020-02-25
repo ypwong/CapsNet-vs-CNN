@@ -115,7 +115,7 @@ class CNN:
                                             global_step, self.decay_steps,
                                             self.decay_rate, staircase=True)
 
-		self.train_step = tf.train.AdamOptimizer(self.decayed_lr).minimize(self.loss)
+		self.train_step = tf.train.AdamOptimizer(self.decayed_lr).minimize(self.loss, global_step=global_step)
 
 	def accuracy(self):
 		'''

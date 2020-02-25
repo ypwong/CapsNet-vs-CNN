@@ -203,7 +203,7 @@ class CapsNet:
 		global_step = tf.Variable(0, trainable=False)
 		self.decayed_lr = tf.train.exponential_decay(self.learning_rate,
 		                                            global_step, self.decay_steps,
-		                                            0.98, staircase=True)
+		                                            self.decay_rate, staircase=True)
 
 
 		self.train_step = tf.train.AdamOptimizer(self.decayed_lr).minimize(self.loss, global_step=global_step) 
