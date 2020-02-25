@@ -216,11 +216,10 @@ plt.savefig(fig_save_path+'confusion_matrix.png')
 actual_list = [utils_test.classes_dict[utils_test.mode][x] for x in actual_list]
 pred_list = [utils_test.classes_dict[utils_test.mode][x] for x in pred_list]
 
-print('Precision is:'+str(round(precision_score(actual_list, pred_list),2)))
 
-precision = round(precision_score(actual_list, pred_list),2)
-recall = round(recall_score(actual_list, pred_list),2)
-f1_score = round(f1_score(actual_list, pred_list),2)
+precision = round(precision_score(actual_list, pred_list),3)
+recall = round(recall_score(actual_list, pred_list),3)
+f1_score = round(f1_score(actual_list, pred_list),3)
 
 info = "Precision : " + str(precision) +" Recall : " + str(recall) + " F1 Score : " + str(f1_score) + " Best Test Accuracy : " + str(best_test_accuracy)
 
