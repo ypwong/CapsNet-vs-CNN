@@ -6,17 +6,30 @@ defaults = {
 	'img_height'    		: 64,
 	'img_width'     		: 64,
 	'padding'       		: 10,
+<<<<<<< HEAD
 	'tri_ratio' 			: 0.25,
 	'tri_rect_gap'			: 0.1,
 	'min_arrow_len' 		: 25,
 	'rect_thickness'		: 0.5,
+=======
+	'tri_ratio' 			: 0.3,
+	'tri_rect_gap'			: 0.15,
+	'min_arrow_len' 		: 20,
+	'rect_thickness'		: 0.6,
+>>>>>>> 1104bac9a0728c48c62ad0b65c237a515c227513
 	'num_of_data'       	: 1000,
 	'min_tri_len'			: 20,
 	'max_tri_len'			: 50,
 	'min_rect_length'		: 20,
+<<<<<<< HEAD
 	'max_rect_length'		: 50,
 	'min_angle'				: 30,
 	'max_angle'				: 150,
+=======
+	'max_rect_length'		: 62,
+	'min_angle'				: 30,
+	'max_angle'				: 160,
+>>>>>>> 1104bac9a0728c48c62ad0b65c237a515c227513
 	'train_save_path'		: '../dataset/training/',
 	'test_save_path'		: '../dataset/testing/',
 	'mode'					: 'train'

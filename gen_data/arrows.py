@@ -196,6 +196,7 @@ class Arrows:
 
 		#Get the point on the line where the triangle's base would intersect and the height of the triangle.
 
+
 		if triangle and not rectangle:
 
 			adjusted_size = self.tri_height_ratio + 0.2
