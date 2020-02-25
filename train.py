@@ -69,9 +69,8 @@ save_model_path = './model_ckpt/'+cfg.model+'/'+str(cfg.train_data_path.split('/
 load_model_path = None
 
 if not os.path.exists(save_model_path) : os.makedirs(save_model_path)
-
 #Path to save figures
-fig_save_path = cfg.fig_save_path + cfg.train_data_path.split('/')[-2] + '/'+ cfg.train_data_path.split('/')[-3] + '/'
+fig_save_path = cfg.fig_save_path + cfg.train_data_path.split('/')[-2] + '/'+ cfg.train_data_path.split('/')[-3] + '/' + cfg.model + '/'
 if not os.path.exists(fig_save_path) : os.makedirs(fig_save_path)
 
 

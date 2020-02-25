@@ -199,11 +199,11 @@ class Arrows:
 
 		if triangle and not rectangle:
 
-			adjusted_size = self.tri_height_ratio + 0.2
+			adjusted_size_tri = self.tri_height_ratio + 0.15
 		else:
-			adjusted_size = self.tri_height_ratio
+			adjusted_size_tri = self.tri_height_ratio
 
-		triangle_point, tri_height = self.find_point_on_line(point1, point2, adjusted_size) 
+		triangle_point, tri_height = self.find_point_on_line(point1, point2, adjusted_size_tri) 
 
 		triangle_base_length = self.find_triangle_width(tri_height) #Get the length of the triangle's base.
 
@@ -212,8 +212,15 @@ class Arrows:
 		#Get the rest of the points needed to draw triangle.
 		point3, point4 = self.triangle_points(perpendicular_vector, triangle_point, triangle_base_length)
 
+		if rectangle and not triangle:
+
+			adjusted_size_rect = self.rect_ratio - 0.15
+
+		else:
+			adjusted_size_rect = self.rect_ratio
+
 		#Get the point on the original vector to draw the rectangle.
-		rectangle_point_on_line, _ = self.find_point_on_line(point1, point2, self.rect_ratio)
+		rectangle_point_on_line, _ = self.find_point_on_line(point1, point2, adjusted_size_rect)
 
 		#Get the rest of the points needed to draw the rectangle.
 		point5, point6, point7, point8 = self.rectangle_points(triangle_base_length, rectangle_point_on_line, point1, perpendicular_vector, self.rect_thickness)

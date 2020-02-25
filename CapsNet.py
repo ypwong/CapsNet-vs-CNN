@@ -139,7 +139,7 @@ class CapsNet:
 								 activation_fn=tf.nn.relu, scope='Conv_3', trainable=not self.freeze_conv)
 
 		capsules = tf.reshape(conv3, (tf.shape(conv3)[0], -1, self.primary_caps_vlength, 1), name='FirstCaps')
-		num_capsules = int((self.image_height//2**2)*(self.image_width//2**2)*256/self.primary_caps_vlength) #= 100352
+		num_capsules = int((16)*(16)*256/self.primary_caps_vlength) #= 100352
 		primary_caps = self.squash(capsules) #non-linearity
 
 		primary_caps = tf.reshape(primary_caps, shape=(tf.shape(capsules)[0], -1, 1, self.primary_caps_vlength, 1 ),
