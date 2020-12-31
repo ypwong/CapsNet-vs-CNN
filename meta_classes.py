@@ -66,6 +66,14 @@ class ModelMeta(metaclass=ABCMeta):
         '''
         pass
 
+
+    @abstractmethod
+    def calculate_loss():
+        '''
+        Returns the loss of the network without optimizing the model.
+        '''
+        pass
+
     @staticmethod
     @abstractmethod
     def calculate_accuracy():

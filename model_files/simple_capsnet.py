@@ -244,7 +244,7 @@ class SimpleCapsNet(nn.Module, ModelMeta):
 
 
 
-    def calculate_loss(self, v_lengths, y, lambda_, ori_imgs, decoded, reg_scale, device, num_classes):
+    def total_model_loss(self, v_lengths, y, lambda_, ori_imgs, decoded, reg_scale, device, num_classes):
         '''
         Calculates the classification loss of the network.
         '''
@@ -280,7 +280,7 @@ class SimpleCapsNet(nn.Module, ModelMeta):
         Initialize the loss, optim and lr decayer functions.
         '''
 
-        criterion = self.calculate_loss
+        criterion = self.total_model_loss
         optim_func = torch.optim.Adam(model_obj.parameters())
         lr_decay = torch.optim.lr_scheduler.ExponentialLR(optim_func, gamma=self.decay_rate)
 
@@ -289,17 +289,29 @@ class SimpleCapsNet(nn.Module, ModelMeta):
 
 
 
-    def optimize_model(self, predicted, target, lambda_, ori_imgs, decoded, reg_scale, loss_func, optim_func, decay_func, device,
-                        lr_decay_step=False):
+    def optimize_model(self, predicted, target, ori_imgs, decoded, loss_func, optim_func, decay_func, lr_decay_step=False):
         '''
         Optimize given CapsNet model.
         '''
 
         optim_func.zero_grad()
-        total_loss = loss_func(predicted, target, lambda_, ori_imgs, decoded, reg_scale, device, self.num_classes)
+        total_loss = loss_func(predicted, target, self.lambda_, ori_imgs, decoded, self.reg_scale, self.device, self.num_classes)
 
         total_loss.backward()
         optim_func.step()
+
+        if lr_decay_step:
+            decay_func.step()
+
+        return total_loss.item()
+
+
+    def calculate_loss(self, predicted, target, ori_imgs, decoded, loss_func):
+        '''
+        Returns the loss of the model without optimizing it.
+        '''
+
+        total_loss = loss_func(predicted, target, self.lambda_, ori_imgs, decoded, self.reg_scale, self.device, self.num_classes)
 
         return total_loss.item()
 

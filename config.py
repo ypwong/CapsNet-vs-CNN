@@ -8,6 +8,8 @@ import torch
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 SIMPLE_CNN_FEATURE_MODEL_PATH = './trained_models/simple_cnn_feature.pth'
 SIMPLE_CNN_OBJECT_MODEL_PATH = './trained_models/simple_cnn_object.pth'
+SIMPLE_CAPSNET_FEATURE_MODEL_PATH = './trained_models/simple_capsnet_feature.pth'
+SIMPLE_CAPSNET_OBJECT_MODEL_PATH = './trained_models/simple_capsnet_object.pth'
 
 
 parser = argparse.ArgumentParser()
@@ -22,8 +24,7 @@ parser.add_argument('--train_num_data_per_class', type=int, default=1000, help='
 parser.add_argument('--test_num_data_per_class', type=int, default=1000, help='Specify the number of data to be generated per class for testing.')
 parser.add_argument('--load_from_disk', type=bool, help='Setting to True would load the dataset from disk. Else dataset will be \
                         generated and written to disk.')
-parser.add_argument('--data_path', type=str, default='./generated_dataset/', help='Specify the path to the dataset folder to write to or load from.',
-                    required=True)
+parser.add_argument('--data_path', type=str, default='./generated_dataset/', help='Specify the path to the dataset folder to write to or load from.')
 parser.add_argument('--batch_size', type=int, default=10, help='Specify the batch size of the data to be fed to the models.')
 parser.add_argument('--num_workers', type=int, default=3, help='Specify the num of workers to be used to generate/load the data.')
 parser.add_argument('--shuffle', type=bool, default=True, help='Setting this to True will enable shuffling among the dataset.')

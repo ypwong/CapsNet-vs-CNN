@@ -97,6 +97,16 @@ class SimpleCNN(nn.Module, ModelMeta):
 
         return total_loss.item()
 
+
+    def calculate_loss(predicted, target, loss_func):
+        '''
+        Returns the loss of the model without optimizing the model.
+        '''
+
+        total_loss = loss_func(input=predicted, target=target)
+
+        return total_loss.item()
+
     @staticmethod
     def calculate_accuracy(predicted, target):
         '''

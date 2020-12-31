@@ -39,6 +39,13 @@ class LoadDataset(Dataset):
         self.data_path = self.data_path.replace('//', '/')#if the user supplied '/' at the end of the path, then there will be double slahes.
 
         if self.load_from_disk:
+
+            self.dataset_object = DatasetFactory().factory_call(requested_dataset=dataset_name, **kwargs)
+            if self.dataset_level == 'feature_level':
+                self.classes = self.dataset_object.get_feature_level_data()
+            elif self.dataset_level == 'object_level':
+                self.classes = self.dataset_object.get_object_level_data()
+
             self.image_label_path = self.images_retriever()
             self.total_data = len(self.image_label_path)
 

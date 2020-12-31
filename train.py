@@ -20,11 +20,12 @@ model, criterion, optimizer, lr_decayer = ModelFactory().factory_call(requested_
                                                                       model_load_path=args.model_load_path, device=cfg.DEVICE, image_size=32)
 
 train_dataset = LoadDataset(dataset_name=args.dataset_name, dataset_level=args.dataset_level, num_data_per_class=args.train_num_data_per_class,
-                        load_from_disk=False, data_path=args.data_path ,transform=transforms.Compose([Grayscale(), ToTensor()]))
+                        load_from_disk=args.load_from_disk, data_path=args.data_path ,transform=transforms.Compose([Grayscale(), ToTensor()]))
 train_data_generator = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=args.shuffle, num_workers=args.num_workers)
 
 test_dataset = LoadDataset(dataset_name=args.dataset_name, dataset_level=args.dataset_level, num_data_per_class=args.test_num_data_per_class,
-                        load_from_disk=False, train=False, data_path=args.data_path ,transform=transforms.Compose([Grayscale(), ToTensor()]))
+                        load_from_disk=args.load_from_disk, train=False, data_path=args.data_path,
+                        transform=transforms.Compose([Grayscale(), ToTensor()]))
 test_data_generator = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=args.shuffle, num_workers=args.num_workers)
 
 
@@ -40,38 +41,68 @@ print("Training and testing starts for :\nModel = %s\nDataset : %s\nDataset Leve
 if args.model == 'simple_capsnet':
 
     for epoch_idx in range(args.epoch):
-
-        epoch_loss = 0
-
-        accuracy = 0
         i = 0
+        j = 0
 
+        #training
+        model.train()
+        train_epoch_loss = 0
+        train_epoch_accuracy = 0
         for i, sample in tqdm(enumerate(train_data_generator)):
 
-            # print(sample)
             batch_x, batch_y = sample['image'].to(cfg.DEVICE), sample['label'].to(cfg.DEVICE)
-
 
             v_lengths, decoded_images = model(batch_x, batch_y)
 
-            total_loss = model.optimize_model(v_lengths, batch_y, 0.5, batch_x, decoded_images, 0.5, criterion, optimizer, lr_decayer, cfg.DEVICE, False)
 
-            epoch_loss += total_loss
+            total_loss = model.optimize_model(predicted=v_lengths, target=batch_y, ori_imgs=batch_x, decoded=decoded_images,
+                                              loss_func=criterion, optim_func=optimizer, decay_func=lr_decayer, lr_decay_step=False)
 
-            accuracy += model.calculate_accuracy(v_lengths, batch_y)
+            train_epoch_loss += total_loss
 
-        print(epoch_loss)
-        print("Accuracy :", accuracy/(i + 1))
+            train_epoch_accuracy += model.calculate_accuracy(v_lengths, batch_y)
+
+        #testing
+        model.eval()
+        test_epoch_loss = 0
+        test_epoch_accuracy = 0
+        for j, sample in tqdm(enumerate(test_data_generator)):
+
+            batch_x, batch_y = sample['image'].to(cfg.DEVICE), sample['label'].to(cfg.DEVICE)
+
+            v_lengths, decoded_images = model(batch_x, batch_y)
+
+            total_loss = model.calculate_loss(predicted=v_lengths, target=batch_y, ori_imgs=batch_x, decoded=decoded_images,
+                                              loss_func=criterion)
+
+            test_epoch_loss += total_loss
+            test_epoch_accuracy += model.calculate_accuracy(v_lengths, batch_y)
 
 
-else:
+
+        print(f"Mean Training Loss : {train_epoch_loss/(i + 1)}")
+        print(f"Mean Training Accuracy : {train_epoch_accuracy/(i + 1)}")
+        print(f"Mean Testing Loss : {test_epoch_loss/(i + 1)}")
+        print(f"Mean Testing Accuracy : {test_epoch_accuracy/(i + 1)}")
+
+    if args.mode == 'transfer_learning':
+        torch.save(model.state_dict(), cfg.SIMPLE_CAPSNET_OBJECT_MODEL_PATH)
+    elif args.mode is None:
+        torch.save(model.state_dict(), cfg.SIMPLE_CAPSNET_FEATURE_MODEL_PATH)
+
+
+elif args.model == 'simple_cnn':
 
     for e in range(args.epoch):
 
+        i=0
+        j=0
 
-        epoch_loss = 0
-        accuracy = 0
-        i = 0
+        train_epoch_loss = 0
+        train_epoch_accuracy = 0
+        test_epoch_loss = 0
+        test_epoch_accuracy = 0
+        model.train()
         for i, sample in tqdm(enumerate(train_data_generator)):
 
             batch_x, batch_y = sample['image'].to(cfg.DEVICE), sample['label'].to(cfg.DEVICE)
@@ -81,12 +112,31 @@ else:
             loss = model.optimize_model(predicted=net_output, target=batch_y, loss_func=criterion, optim_func=optimizer,
                         decay_func=lr_decayer)
 
-            epoch_loss += loss
-            accuracy += model.calculate_accuracy(net_output, batch_y)
+            train_epoch_loss += loss
+            train_epoch_accuracy += model.calculate_accuracy(net_output, batch_y)
 
-        print(epoch_loss)
-        print("Accuracy : ", accuracy/(i + 1))
+        model.eval()
+        for j, sample in tqdm(enumerate(test_data_generator)):
 
-    torch.save(model.state_dict(), cfg.SIMPLE_CNN_FEATURE_MODEL_PATH)
+            batch_x, batch_y = sample['image'].to(cfg.DEVICE), sample['label'].to(cfg.DEVICE)
+
+            net_output = model(batch_x)
+
+            loss = model.calculate_loss(predicted=net_output, target=batch_y, loss_func=criterion)
+
+            test_epoch_loss += loss
+            test_epoch_accuracy += model.calculate_accuracy(predicted=net_output, target=batch_y)
+
+
+        print(f"Mean Training Loss : {train_epoch_loss/(i + 1)}")
+        print(f"Mean Training Accuracy : {train_epoch_accuracy/(i + 1)}")
+        print(f"Mean Testing Loss : {test_epoch_loss/(i + 1)}")
+        print(f"Mean Testing Accuracy : {test_epoch_accuracy/(i + 1)}")
+
+
+    if args.mode == 'transfer_learning':
+        torch.save(model.state_dict(), cfg.SIMPLE_CNN_OBJECT_MODEL_PATH)
+    elif args.mode is None :
+        torch.save(model.state_dict(), cfg.SIMPLE_CNN_FEATURE_MODEL_PATH)
 
 
