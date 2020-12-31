@@ -79,6 +79,7 @@ class SimpleCNN(nn.Module, ModelMeta):
 
         return output
 
+
     @staticmethod
     def optimize_model(predicted, target, loss_func, optim_func, decay_func, lr_decay_step=False):
         '''

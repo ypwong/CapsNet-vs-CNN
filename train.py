@@ -23,7 +23,7 @@ train_dataset = LoadDataset(dataset_name=args.dataset_name, dataset_level=args.d
                         load_from_disk=False, data_path=args.data_path ,transform=transforms.Compose([Grayscale(), ToTensor()]))
 train_data_generator = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=args.shuffle, num_workers=args.num_workers)
 
-test_dataset = LoadDataset(dataset_name=args.dataset_name, dataset_level=args.dataset_level, num_data_per_class=args.train_num_data_per_class,
+test_dataset = LoadDataset(dataset_name=args.dataset_name, dataset_level=args.dataset_level, num_data_per_class=args.test_num_data_per_class,
                         load_from_disk=False, train=False, data_path=args.data_path ,transform=transforms.Compose([Grayscale(), ToTensor()]))
 test_data_generator = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=args.shuffle, num_workers=args.num_workers)
 
@@ -32,8 +32,8 @@ model = model.to(cfg.DEVICE)
 model.train()
 
 
-print("Training and testing starts for :\nModel = %s\nDataset : %s\nDataset Level : %s\nNum data per class : %d\n"\
-            %(args.model, args.dataset_name, args.dataset_level, int(args.num_data_per_class)))
+print("Training and testing starts for :\nModel = %s\nDataset : %s\nDataset Level : %s\nTraining Num data per class : %d\n"\
+            %(args.model, args.dataset_name, args.dataset_level, int(args.train_num_data_per_class)))
 
 
 
@@ -46,7 +46,7 @@ if args.model == 'simple_capsnet':
         accuracy = 0
         i = 0
 
-        for i, sample in tqdm(enumerate(data_generator)):
+        for i, sample in tqdm(enumerate(train_data_generator)):
 
             # print(sample)
             batch_x, batch_y = sample['image'].to(cfg.DEVICE), sample['label'].to(cfg.DEVICE)
@@ -72,7 +72,7 @@ else:
         epoch_loss = 0
         accuracy = 0
         i = 0
-        for i, sample in tqdm(enumerate(data_generator)):
+        for i, sample in tqdm(enumerate(train_data_generator)):
 
             batch_x, batch_y = sample['image'].to(cfg.DEVICE), sample['label'].to(cfg.DEVICE)
 
