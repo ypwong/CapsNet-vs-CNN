@@ -72,6 +72,6 @@ def main(dataset_name, train_num_per_class, test_num_per_class, write_folder, ov
     print('--- Finish writing data to disk ---')
 
 
-main(dataset_name='arrow_vs_nonarrow', train_num_per_class=500, test_num_per_class=1000, overwrite_test=True, write_folder='./generated_dataset')
+main(dataset_name='arrow_vs_nonarrow', train_num_per_class=1000, test_num_per_class=2000, overwrite_test=True, write_folder='./generated_dataset')
 
 

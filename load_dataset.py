@@ -72,7 +72,7 @@ class LoadDataset(Dataset):
 
         image, label = self.image_path_label[idx]
 
-        image = cv2.imread(image)
+        image = cv2.imread(image, 0)
 
         sample = {
             'image': image,

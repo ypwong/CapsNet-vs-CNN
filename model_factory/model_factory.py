@@ -38,7 +38,7 @@ class ModelFactory:
                 #convolutional layers will be freezed to retain the learned features.
 
                 assert not model_load_path is None, "The trained model path must be provided for transfer-learning mode!"
-
+                model_load_path = model_load_path.rstrip('/') + '/simple_cnn_feature_model.pth'
                 try:
                     model_object.load_state_dict(torch.load(model_load_path))
                     print("Model has loaded!")
@@ -74,7 +74,7 @@ class ModelFactory:
             if mode == 'transfer_learning':
 
                 assert not model_load_path is None, "The trained model path must be provided for transfer-learning mode!"
-
+                model_load_path = model_load_path.rstrip('/') + '/simple_capsnet_feature_model.pth'
                 try:
                     model_object.load_state_dict(torch.load(model_load_path))
                     print("Model has loaded!")
