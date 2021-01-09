@@ -1,1 +1,2 @@
 test add files from github
+This file is edited after adding the second file.
